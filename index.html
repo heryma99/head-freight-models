@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>头程(大货)物流商 · 运费预估模型</title><style>
+:root{--bg:#0f1115;--card:#181b22;--card2:#1f242d;--line:#2a2f3a;--txt:#e6e9ef;--mut:#9aa3b2;
+--acc:#4da3ff;--acc2:#23c4a0;--warn:#ffb454;--hit:#1d3a2e;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:24px 18px 60px}
+header{margin-bottom:18px}
+h1{font-size:22px;margin:0 0 6px}
+.meta{color:var(--mut);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+h2{font-size:16px;margin:0 0 14px;color:var(--acc)}
+.row{display:flex;align-items:center;gap:12px;margin:10px 0}
+.row label{width:130px;color:var(--mut);font-size:14px;flex:none}
+.opt{color:var(--warn);font-size:11px;margin-left:6px}
+select,input{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:9px;
+padding:9px 11px;font-size:14px;width:100%;max-width:280px;outline:none}
+select:focus,input:focus{border-color:var(--acc)}
+.result{margin-top:16px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.big{font-size:30px;font-weight:700;color:var(--acc2)}
+.sub{color:var(--mut);font-size:13px;margin-top:6px}
+.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600}
+tr.hit{background:var(--hit)}
+tr.hit td{color:var(--acc2);font-weight:600}
+.note{color:var(--mut);font-size:12.5px;margin-top:10px}
+footer{color:var(--mut);font-size:12.5px;line-height:1.7;margin-top:8px}
+footer p{margin:4px 0}
+.back{display:inline-block;margin-bottom:14px;color:var(--acc);text-decoration:none;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:8px 0 22px}
+.citem{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;text-decoration:none;color:inherit;transition:.15s}
+.citem:hover{border-color:var(--acc);transform:translateY(-2px)}
+.citem .nm{font-size:16px;font-weight:600}
+.citem .dt{color:var(--mut);font-size:12px;margin-top:6px}
+.cmp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.cmp .ctr{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:var(--mut);font-size:13px}
+.cmp input{width:110px}
+td.cell span{display:block;font-size:13px;padding:2px 0}
+td.cell .c0{color:var(--acc)}
+td.cell .c1{color:var(--acc2)}
+td.none{color:var(--mut)}
+</style></head>
+<body><div class="wrap">
+<header><h1>头程(大货)物流商 · 运费预估模型</h1>
+<div class="meta">散货按 KG 计费 ｜ 计费重 = max(实重, 体积重/8000)，向上取最小档 ｜ 数据源：飞书群「电商渠道X物流(报价)」</div></header>
+<div class="cards">
+<a class="citem" href="zhongyuntong.html"><div class="nm">中运通达</div><div class="dt">报价更新 2026-06-09 ｜ 点击进入独立预估</div></a>
+<a class="citem" href="pujing.html"><div class="nm">璞景(翼德)</div><div class="dt">报价更新 2026-03-17 ｜ 点击进入独立预估</div></a>
+
+</div>
+<section class="cmp"><h2>横向对比（按计费重取档）</h2>
+<div class="ctr">对比计费重 <input id="cw" type="number" min="0" step="1" value="100"> kg
+<span style="margin-left:8px">单元格：物流商 $单价/kg</span></div>
+<table id="cmp"><thead><tr><th>目的地 ＼ 渠道</th><th>空派</th><th>海派(美森CLX)</th><th>海卡(普船)</th></tr></thead><tbody></tbody></table>
+<div class="note">仅列有报价的「目的地×渠道」组合；— 表示该物流商无此报价。单价按上方计费重向上取档。</div>
+</section>
+<footer><p>每个物流商的独立模型见上方卡片（单独页面，可独立分享/收藏）。亚丰等新增物流商：发送报价 xlsx 后自动生成独立页 + 纳入对比。</p>
+<p>仅供内部预估，以实际账单为准。</p></footer>
+</div>
+<script>
+var CARRIERS = {"zhongyuntong": {"name": "中运通达", "updated": "2026-06-09", "channels": {"air": {"label": "空派", "regions": {"US_WEST": {"tiers": [[21, 73.0], [75, 70.0], [101, 68.0], [301, 68.0]]}, "US_EAST": {"tiers": [[21, 75.0], [75, 72.0], [101, 70.0], [301, 70.0]]}, "EU": {"tiers": [[21, 58.5], [51, 55.5], [101, 53.5], [301, 52.5]]}, "UK": {"tiers": [[10, 57.0], [101, 56.0], [301, 55.0]]}, "CA": {"tiers": [[12, 64.8], [21, 60.3], [71, 58.8], [101, 57.3], [301, 57.3]]}}}, "sea_express": {"label": "海派(美森CLX)", "regions": {"US_WEST": {"tiers": [[12, 19.5], [71, 17.0], [101, 15.5]]}, "US_EAST": {"tiers": [[12, 22.0], [71, 19.5], [101, 18.0]]}}}, "sea_truck": {"label": "海卡(普船)", "regions": {"US_WEST": {"tiers": [[12, 11.2], [51, 10.7]], "note": "美森正班卡派 ONT8/LGB8/LAX9"}}}}}, "pujing": {"name": "璞景(翼德)", "updated": "2026-03-17", "channels": {"air": {"label": "空派", "regions": {"US_WEST": {"tiers": [[10, 57.0], [21, 55.0], [71, 53.0], [101, 51.0]]}, "US_EAST": {"tiers": [[10, 57.0], [21, 55.0], [71, 53.0], [101, 51.0]]}, "UK": {"tiers": [[21, 46.0], [51, 44.0], [101, 43.0], [301, 42.5]]}, "EU": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2], [1000, 13.1]], "note": "欧洲空运包税(与欧盟海运包税同价,取德国)"}}}, "sea_express": {"label": "海派(美森CLX)", "regions": {"US_WEST": {"tiers": [[12, 17.0], [51, 15.5], [100, 14.0]]}, "US_EAST": {"tiers": [[12, 18.0], [51, 16.5], [100, 15.0]]}, "EU": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2], [1000, 13.1]]}}}, "sea_truck": {"label": "海卡(普船)", "regions": {"US_WEST": {"tiers": [[12, 11.0], [51, 9.5], [100, 8.0]], "note": "盐田快船 美西"}}}}}};
+var CH = {air:'空派', sea_express:'海派(美森CLX)', sea_truck:'海卡(普船)'};
+var RG = {US_WEST:'美西 (8-9)', US_EAST:'美东/美中 (0-7)', EU:'欧洲', UK:'英国', CA:'加拿大'};
+var CHKEYS = ['air','sea_express','sea_truck'];
+function rateFor(tiers,w){ var best=null;
+  for(var i=0;i<tiers.length;i++){ var bp=tiers[i][0],r=tiers[i][1]; if(w<=bp){ if(best===null||bp<best.bp) best={bp:bp,r:r}; } }
+  if(best) return best.r; return tiers[tiers.length-1][1]; }
+function rebuild(){ var w=parseFloat(document.getElementById('cw').value)||0;
+  var rows=document.getElementById('cmp').querySelector('tbody'); rows.innerHTML='';
+  var regions={};
+  for(var k in CARRIERS){ var c=CARRIERS[k]; for(var ch in c.channels){ for(var rg in c.channels[ch].regions) regions[rg]=1; } }
+  Object.keys(regions).forEach(function(rg){
+    var tr=document.createElement('tr'); tr.innerHTML='<td>'+RG[rg]+'</td>';
+    CHKEYS.forEach(function(ch){
+      var cell=''; var any=false;
+      for(var k in CARRIERS){ var c=CARRIERS[k]; var rd=c.channels[ch]&&c.channels[ch].regions[rg];
+        if(rd){ any=true; var r=rateFor(rd.tiers,w); cell+='<span class="'+(k==='zhongyuntong'?'c0':'c1')+'">'+c.name+' $'+r+'</span>'; } }
+      var td=document.createElement('td'); td.className='cell'; td.innerHTML=any?cell:'<span class="none">—</span>'; tr.appendChild(td);
+    });
+    rows.appendChild(tr);
+  });
+}
+document.getElementById('cw').oninput=rebuild; rebuild();
+</script></body></html>
