@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>璞景(翼德) · 头程(大货)运费预估</title><style>
+:root{--bg:#0f1115;--card:#181b22;--card2:#1f242d;--line:#2a2f3a;--txt:#e6e9ef;--mut:#9aa3b2;
+--acc:#4da3ff;--acc2:#23c4a0;--warn:#ffb454;--hit:#1d3a2e;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:24px 18px 60px}
+header{margin-bottom:18px}
+h1{font-size:22px;margin:0 0 6px}
+.meta{color:var(--mut);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+h2{font-size:16px;margin:0 0 14px;color:var(--acc)}
+.row{display:flex;align-items:center;gap:12px;margin:10px 0}
+.row label{width:130px;color:var(--mut);font-size:14px;flex:none}
+.opt{color:var(--warn);font-size:11px;margin-left:6px}
+select,input{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:9px;
+padding:9px 11px;font-size:14px;width:100%;max-width:280px;outline:none}
+select:focus,input:focus{border-color:var(--acc)}
+.result{margin-top:16px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.big{font-size:30px;font-weight:700;color:var(--acc2)}
+.sub{color:var(--mut);font-size:13px;margin-top:6px}
+.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600}
+tr.hit{background:var(--hit)}
+tr.hit td{color:var(--acc2);font-weight:600}
+.note{color:var(--mut);font-size:12.5px;margin-top:10px}
+footer{color:var(--mut);font-size:12.5px;line-height:1.7;margin-top:8px}
+footer p{margin:4px 0}
+.back{display:inline-block;margin-bottom:14px;color:var(--acc);text-decoration:none;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:8px 0 22px}
+.citem{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;text-decoration:none;color:inherit;transition:.15s}
+.citem:hover{border-color:var(--acc);transform:translateY(-2px)}
+.citem .nm{font-size:16px;font-weight:600}
+.citem .dt{color:var(--mut);font-size:12px;margin-top:6px}
+.cmp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.cmp .ctr{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:var(--mut);font-size:13px}
+.cmp input{width:110px}
+td.cell span{display:block;font-size:13px;padding:2px 0}
+td.cell .c0{color:var(--acc)}
+td.cell .c1{color:var(--acc2)}
+td.none{color:var(--mut)}
+</style></head>
+<body><div class="wrap">
+<header><h1>璞景(翼德) · 头程(大货)运费预估</h1>
+<div class="meta">报价更新：2026-03-17 ｜ 币种：USD ｜ 散货按 KG 计费</div></header>
+<section class="card"><h2>运费预估</h2>
+<div class="row"><label>目的地</label><select id="region"></select></div>
+<div class="row"><label>渠道</label><select id="channel"></select></div>
+<div class="row"><label>实重 (kg)</label><input id="real" type="number" min="0" step="0.1" value="50"></div>
+<div class="row"><label>体积 (cm³)<span class="opt">可选</span></label><input id="vol" type="number" min="0" step="1" value="0"></div>
+<div class="result" id="result">—</div></section>
+<section class="card"><h2>当前报价档位</h2>
+<table id="rateTable"><thead><tr><th>重量档 (≤ kg)</th><th>单价 ($/kg)</th></tr></thead><tbody></tbody></table>
+<div class="note" id="chNote"></div></section>
+<footer><p>计费重 = max(实重, 体积重/8000)；按 KG 向上取最小档计费（最小档 ≥ 计费重）。超出公开档位上限按最高档单价估算，实际可议。</p>
+<p>数据源：璞景(翼德) 报价（2026-03-17），飞书群「电商渠道X物流(报价)」。仅供内部预估，以实际账单为准。</p></footer>
+</div>
+<script>
+var CARRIER = {"name": "璞景(翼德)", "updated": "2026-03-17", "channels": {"air": {"label": "空派", "regions": {"US_WEST": {"tiers": [[10, 57.0], [21, 55.0], [71, 53.0], [101, 51.0]]}, "US_EAST": {"tiers": [[10, 57.0], [21, 55.0], [71, 53.0], [101, 51.0]]}, "UK": {"tiers": [[21, 46.0], [51, 44.0], [101, 43.0], [301, 42.5]]}, "EU": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2], [1000, 13.1]], "note": "欧洲空运包税(与欧盟海运包税同价,取德国)"}}}, "sea_express": {"label": "海派(美森CLX)", "regions": {"US_WEST": {"tiers": [[12, 17.0], [51, 15.5], [100, 14.0]]}, "US_EAST": {"tiers": [[12, 18.0], [51, 16.5], [100, 15.0]]}, "EU": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2], [1000, 13.1]]}}}, "sea_truck": {"label": "海卡(普船)", "regions": {"US_WEST": {"tiers": [[12, 11.0], [51, 9.5], [100, 8.0]], "note": "盐田快船 美西"}}}}};
+var CH = {air:'空派', sea_express:'海派(美森CLX)', sea_truck:'海卡(普船)'};
+var RG = {US_WEST:'美西 (邮编8-9)', US_EAST:'美东/美中 (0-7)', EU:'欧洲', UK:'英国', CA:'加拿大'};
+var rc={}, cr={};
+for(var ch in CARRIER.channels){ for(var rg in CARRIER.channels[ch].regions){
+  (rc[rg]=rc[rg]||[]).push(ch); (cr[ch]=cr[ch]||[]).push(rg); } }
+var regionSel=document.getElementById('region'), chanSel=document.getElementById('channel');
+var real=document.getElementById('real'), vol=document.getElementById('vol');
+var result=document.getElementById('result'), rateTable=document.getElementById('rateTable'), chNote=document.getElementById('chNote');
+function fillRegions(){ regionSel.innerHTML=''; Object.keys(rc).forEach(function(rg){
+  var o=document.createElement('option'); o.value=rg; o.textContent=RG[rg]||rg; regionSel.appendChild(o); }); }
+function fillChannels(){ chanSel.innerHTML=''; (rc[regionSel.value]||[]).forEach(function(ch){
+  var o=document.createElement('option'); o.value=ch; o.textContent=CH[ch]||ch; chanSel.appendChild(o); }); }
+function rateFor(tiers,w){ var best=null;
+  for(var i=0;i<tiers.length;i++){ var bp=tiers[i][0],r=tiers[i][1]; if(w<=bp){ if(best===null||bp<best.bp) best={bp:bp,r:r}; } }
+  if(best) return {rate:best.r,bp:best.bp,over:false};
+  var last=tiers[tiers.length-1]; return {rate:last[1],bp:last[0],over:true}; }
+function compute(){ var rg=regionSel.value, ch=chanSel.value;
+  var rd = CARRIER.channels[ch] && CARRIER.channels[ch].regions[rg];
+  var tb=rateTable.querySelector('tbody');
+  if(!rd){ result.textContent='该目的地 × 渠道组合暂无报价'; tb.innerHTML=''; chNote.textContent=''; return; }
+  var tiers=rd.tiers, realW=parseFloat(real.value)||0, v=parseFloat(vol.value)||0;
+  var cw=Math.max(realW, v/8000), res=rateFor(tiers,cw), cost=res.rate*cw;
+  result.innerHTML='<div class="big">$'+cost.toFixed(2)+'</div><div class="sub">计费重 '+cw.toFixed(2)+
+    ' kg ｜ 档位 ≤'+res.bp+' kg ｜ 单价 $'+res.rate+'/kg'+(res.over?' <span class="warn">(超出公开上限,按最高档估)</span>':'')+'</div>';
+  tb.innerHTML=''; tiers.forEach(function(t){ var tr=document.createElement('tr');
+    if(t[0]===res.bp) tr.className='hit'; tr.innerHTML='<td>≤ '+t[0]+' kg</td><td>$ '+t[1]+'</td>'; tb.appendChild(tr); });
+  chNote.textContent = rd.note ? ('备注：'+rd.note) : ''; }
+regionSel.onchange=function(){ if((rc[regionSel.value]||[]).indexOf(chanSel.value)<0) chanSel.value=rc[regionSel.value][0];
+  fillChannels(); compute(); };
+chanSel.onchange=compute; real.oninput=compute; vol.oninput=compute;
+fillRegions(); fillChannels(); compute();
+</script></body></html>
