@@ -54,15 +54,15 @@ td.none{color:var(--mut)}
 <div class="row"><label>体积 (cm³)<span class="opt">可选</span></label><input id="vol" type="number" min="0" step="1" value="0"></div>
 <div class="result" id="result">—</div></section>
 <section class="card"><h2>当前报价档位</h2>
-<table id="rateTable"><thead><tr><th>重量档 (≤ kg)</th><th>单价 ($/kg)</th></tr></thead><tbody></tbody></table>
+<table id="rateTable"><thead><tr><th>重量档 (≤ kg)</th><th>单价 (¥/kg)</th></tr></thead><tbody></tbody></table>
 <div class="note" id="chNote"></div></section>
 <footer><p>计费重 = max(实重, 体积重/8000)；按 KG 向上取最小档计费（最小档 ≥ 计费重）。超出公开档位上限按最高档单价估算，实际可议。</p>
 <p>数据源：璞景(翼德) 报价（2026-03-17），飞书群「电商渠道X物流(报价)」。仅供内部预估，以实际账单为准。</p></footer>
 </div>
 <script>
-var CARRIER = {"name": "璞景(翼德)", "updated": "2026-03-17", "channels": {"air": {"label": "空派", "regions": {"US_WEST": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "US_CENTRAL": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "US_EAST": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "EU": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2], [1000, 13.1]], "note": "欧洲空运包税(与欧盟海运包税同价,取德国)"}, "UK": {"tiers": [[21, 46.0], [51, 44.0], [101, 43.0], [301, 42.5]]}}}, "sea_express": {"label": "海派(美森CLX)", "regions": {"US_WEST": {"tiers": [[51, 17], [100, 15.5], [101, 14]]}, "US_CENTRAL": {"tiers": [[51, 18], [100, 16.5], [101, 15]]}, "US_EAST": {"tiers": [[51, 19], [100, 17.5], [101, 16]]}, "EU": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2], [1000, 13.1]]}}}, "sea_truck": {"label": "海卡(普船)", "regions": {"US_WEST": {"tiers": [[51, 11], [100, 9.5], [101, 8]]}, "US_CENTRAL": {"tiers": [[51, 12], [100, 10.5], [101, 9]]}, "US_EAST": {"tiers": [[51, 13], [100, 11.5], [101, 10]]}}}}};
+var CARRIER = {"name": "璞景(翼德)", "updated": "2026-03-17", "channels": {"air": {"label": "空派", "regions": {"US_WEST": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "US_CENTRAL": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "US_EAST": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "EU_T1": {"tiers": [[21, 48], [45, 46], [100, 45]], "note": "欧洲空运包税 UPS快线 21KG+ · 德国"}, "EU_T2": {"tiers": [[21, 50.5], [45, 48.5], [100, 47.5]], "note": "欧洲空运包税 UPS快线 21KG+ · 捷克波兰奥地利匈牙利法国"}, "EU_T3": {"tiers": [[21, 51], [45, 49], [100, 48]], "note": "欧洲空运包税 UPS快线 21KG+ · 荷丹爱立拉保卢瑞葡芬斯洛西意"}, "EU_T4": {"tiers": [[21, 51.5], [45, 49.5], [100, 48.5]], "note": "欧洲空运包税 UPS快线 21KG+ · 希腊爱尔兰"}, "UK": {"tiers": [[21, 49], [51, 47], [101, 46], [301, 45.5]], "note": "英国DPD快线 包税"}}}, "sea_express": {"label": "海派(美森CLX)", "regions": {"US_WEST": {"tiers": [[51, 17], [100, 15.5], [101, 14]]}, "US_CENTRAL": {"tiers": [[51, 18], [100, 16.5], [101, 15]]}, "US_EAST": {"tiers": [[51, 19], [100, 17.5], [101, 16]]}, "EU_T1": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2]], "note": "欧盟海运包税 EU-W 21KG+ · 德国"}, "EU_T2": {"tiers": [[21, 17.8], [45, 15.8], [100, 14.3], [500, 14.2]], "note": "欧盟海运包税 EU-W 21KG+ · 捷克波兰奥地利匈牙利法国"}, "EU_T3": {"tiers": [[21, 18.8], [45, 16.8], [100, 15.3], [500, 15.2]], "note": "欧盟海运包税 EU-W 21KG+ · 荷丹爱立拉保卢瑞葡芬斯洛西意"}, "EU_T4": {"tiers": [[21, 19.8], [45, 17.8], [100, 16.3], [500, 16.2]], "note": "欧盟海运包税 EU-W 21KG+ · 希腊爱尔兰"}, "UK": {"tiers": [[21, 16], [51, 14], [101, 13], [301, 12.9]], "note": "英国海运 DPD派送 包税"}}}, "sea_truck": {"label": "海卡(普船)", "regions": {}}}};
 var CH = {air:'空派', sea_express:'海派(美森CLX)', sea_truck:'海卡(普船)'};
-var RG = {US_WEST:'美西 (邮编8-9)', US_WEST97:'美西 (邮编97-99)', US_CENTRAL:'美中 (邮编4-7)', US_EAST:'美东 (邮编0-3)', EU:'欧洲', UK:'英国', CA:'加拿大'};
+var RG = {US_WEST:'美西 (邮编8-9)', US_WEST97:'美西 (邮编97-99)', US_CENTRAL:'美中 (邮编4-7)', US_EAST:'美东 (邮编0-3)', EU_T1:'欧洲T1·德国', EU_T2:'欧洲T2·法国', EU_T3:'欧洲T3·西/意/波', EU_T4:'欧洲T4·其他偏远国', UK:'英国', CA:'加拿大'};
 var rc={}, cr={};
 for(var ch in CARRIER.channels){ for(var rg in CARRIER.channels[ch].regions){
   (rc[rg]=rc[rg]||[]).push(ch); (cr[ch]=cr[ch]||[]).push(rg); } }
@@ -73,20 +73,19 @@ function fillRegions(){ regionSel.innerHTML=''; Object.keys(rc).forEach(function
   var o=document.createElement('option'); o.value=rg; o.textContent=RG[rg]||rg; regionSel.appendChild(o); }); }
 function fillChannels(){ chanSel.innerHTML=''; (rc[regionSel.value]||[]).forEach(function(ch){
   var o=document.createElement('option'); o.value=ch; o.textContent=CH[ch]||ch; chanSel.appendChild(o); }); }
-function rateFor(tiers,w){ var best=null;
-  for(var i=0;i<tiers.length;i++){ var bp=tiers[i][0],r=tiers[i][1]; if(w<=bp){ if(best===null||bp<best.bp) best={bp:bp,r:r}; } }
-  if(best) return {rate:best.r,bp:best.bp,over:false};
-  var last=tiers[tiers.length-1]; return {rate:last[1],bp:last[0],over:true}; }
+function rateFor(tiers,w){ var rate=tiers[0][1], bp=tiers[0][0];
+  for(var i=0;i<tiers.length;i++){ if(w>=tiers[i][0]){ rate=tiers[i][1]; bp=tiers[i][0]; } else break; }
+  var last=tiers[tiers.length-1]; return {rate:rate, bp:bp, over: w>last[0]}; }
 function compute(){ var rg=regionSel.value, ch=chanSel.value;
   var rd = CARRIER.channels[ch] && CARRIER.channels[ch].regions[rg];
   var tb=rateTable.querySelector('tbody');
   if(!rd){ result.textContent='该目的地 × 渠道组合暂无报价'; tb.innerHTML=''; chNote.textContent=''; return; }
   var tiers=rd.tiers, realW=parseFloat(real.value)||0, v=parseFloat(vol.value)||0;
   var cw=Math.max(realW, v/8000), res=rateFor(tiers,cw), cost=res.rate*cw;
-  result.innerHTML='<div class="big">$'+cost.toFixed(2)+'</div><div class="sub">计费重 '+cw.toFixed(2)+
-    ' kg ｜ 档位 ≤'+res.bp+' kg ｜ 单价 $'+res.rate+'/kg'+(res.over?' <span class="warn">(超出公开上限,按最高档估)</span>':'')+'</div>';
+  result.innerHTML='<div class="big">¥'+cost.toFixed(2)+'</div><div class="sub">计费重 '+cw.toFixed(2)+
+    ' kg ｜ 档位 ≤'+res.bp+' kg ｜ 单价 ¥'+res.rate+'/kg'+(res.over?' <span class="warn">(超出公开上限,按最高档估)</span>':'')+'</div>';
   tb.innerHTML=''; tiers.forEach(function(t){ var tr=document.createElement('tr');
-    if(t[0]===res.bp) tr.className='hit'; tr.innerHTML='<td>≤ '+t[0]+' kg</td><td>$ '+t[1]+'</td>'; tb.appendChild(tr); });
+    if(t[0]===res.bp) tr.className='hit'; tr.innerHTML='<td>≤ '+t[0]+' kg</td><td>¥ '+t[1]+'</td>'; tb.appendChild(tr); });
   chNote.textContent = rd.note ? ('备注：'+rd.note) : ''; }
 regionSel.onchange=function(){ if((rc[regionSel.value]||[]).indexOf(chanSel.value)<0) chanSel.value=rc[regionSel.value][0];
   fillChannels(); compute(); };
