@@ -6,7 +6,7 @@
 --acc:#4da3ff;--acc2:#23c4a0;--warn:#ffb454;--hit:#1d3a2e;--bad:#ff6b6b;}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif}
-.wrap{max-width:960px;margin:0 auto;padding:24px 18px 60px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px}
 header{margin-bottom:18px}
 h1{font-size:22px;margin:0 0 6px}
 .meta{color:var(--mut);font-size:13px}
@@ -50,51 +50,125 @@ footer p{margin:4px 0}
 .cmp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
 .cmp .ctr{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:var(--mut);font-size:13px}
 .cmp input{width:110px}
+.cmp .ctr span{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.cmp .ctr span input{width:70px}
+.cmp .ctr span select{width:auto;min-width:70px}
 td.cell span{display:block;font-size:13px;padding:2px 0}
 td.cell .c0{color:var(--acc)}
-td.cell .c1{color:var(--acc2)}
+td.cell .c1{color:var(--acc2);font-weight:600}
 td.none{color:var(--mut)}
 .warn{color:var(--warn)}
 </style></head>
 <body><div class="wrap">
 <header><h1>头程(大货)物流商 · 运费预估模型</h1>
-<div class="meta">散货按 KG 计费 ｜ 计费重 = max(实重, 体积重/8000)，向上取最小档 ｜ 含附加费整体预估 ｜ 数据源：飞书群「电商渠道X物流(报价)」</div></header>
+<div class="meta">散货按 KG 计费 ｜ 计费重 = max(实重, 体积重/6000)，向上取最小档 ｜ 含附加费整体预估 ｜ 数据源：飞书群「电商渠道X物流(报价)」</div></header>
 <div class="cards">
 <a class="citem" href="zhongyuntong.html"><div class="nm">中运通达</div><div class="dt">报价更新 2026-06-09 ｜ 点击进入独立预估</div></a>
 <a class="citem" href="yafeng.html"><div class="nm">亚丰</div><div class="dt">报价更新 2026-03-17 ｜ 点击进入独立预估</div></a>
 
 </div>
-<section class="cmp"><h2>横向对比（按计费重取基础单价）</h2>
-<div class="ctr">对比计费重 <input id="cw" type="number" min="0" step="1" value="100"> kg
-<span style="margin-left:8px">单元格：物流商 ¥单价/kg（仅基础运费，不含附加费）</span></div>
+<section class="cmp"><h2>横向综合对比（含附加费整体预估）</h2>
+<div class="ctr" style="flex-wrap:wrap;gap:8px 12px;">
+  <span>实重(kg)<input id="real" type="number" min="0" step="1" value="100" style="width:70px"></span>
+  <span>体积(cm³)<input id="vol" type="number" min="0" step="1" value="0" style="width:80px"></span>
+  <span>件数<input id="qty" type="number" min="1" step="1" value="1" style="width:60px"></span>
+  <span>地址<select id="addr"><option value="fba" selected>FBA</option><option value="commercial">商业</option><option value="residential">住宅</option></select></span>
+  <span>偏远<select id="remote"><option value="no" selected>否</option><option value="yes">是</option></select></span>
+  <span>产品<select id="prod"><option value="normal" selected>普通</option><option value="sensitive">敏感</option><option value="medical">医疗</option></select></span>
+  <span>品名数<input id="sku" type="number" min="1" step="1" value="1" style="width:60px"></span>
+  <span>报关<select id="customs"><option value="no" selected>否</option><option value="yes">是</option></select></span>
+  <span>带磁<select id="magnet"><option value="no" selected>否</option><option value="yes">是</option></select></span>
+  <span>竹木<select id="bamboo"><option value="no" selected>否</option><option value="yes">是</option></select></span>
+  <span>对比模式<select id="mode"><option value="all">全包到门</option><option value="reg">含常规附加费</option><option value="base">裸价</option></select></span>
+</div>
 <table id="cmp"><thead><tr><th>目的地 ＼ 渠道</th><th>空派</th><th>海派(美森CLX)</th><th>海卡(普船)</th></tr></thead><tbody></tbody></table>
-<div class="note">仅列有报价的「目的地×渠道」组合；— 表示该物流商无此报价。单价按上方计费重向上取档。附加费请在各物流商独立页输入条件后查看。</div>
+<div class="note">单元格内显示各物流商在选定条件下的对应总价；绿色高亮为同组合最低价。若仅显示“—”，表示该物流商无此目的地×渠道报价。附加费规则来自各物流商报价表。</div>
 </section>
-<footer><p>每个物流商的独立模型见上方卡片（单独页面，可独立分享/收藏）。新增物流商（如亚丰以外的发大货商）：发送报价 xlsx 后自动生成独立页 + 纳入对比。</p>
-<p>价格含附加费整体预估见各独立页；报价生效日：中运通达 2026-06-09、亚丰 2026-03-17。仅供内部预估，以实际账单为准。</p></footer>
+<footer><p>每个物流商的独立模型见上方卡片（单独页面，可独立分享/收藏）。新增物流商：发送报价 xlsx 后自动生成独立页 + 纳入对比。</p>
+<p>报价生效日：中运通达 2026-06-09、亚丰 2026-03-17。仅供内部预估，以实际账单为准。</p></footer>
 </div>
 <script>
 var CARRIERS = {"zhongyuntong": {"name": "中运通达", "updated": "2026-06-09", "channels": {"air": {"label": "空派", "regions": {"US_WEST": {"tiers": [[21, 73], [75, 70], [101, 68], [301, 68]]}, "US_WEST97": {"tiers": [[21, 74], [75, 71], [101, 69], [301, 69]]}, "US_CENTRAL": {"tiers": [[21, 74], [75, 71], [101, 69], [301, 69]]}, "US_EAST": {"tiers": [[21, 75], [75, 72], [101, 70], [301, 70]]}, "CA": {"tiers": [[12, 64.8], [21, 60.3], [71, 58.8], [101, 57.3], [301, 57.3]]}, "EU_T1": {"tiers": [[21, 58.5], [51, 55.5], [101, 53.5], [301, 52.5]], "note": "欧洲包税-空派快线 21KG+ · 德国"}, "EU_T2": {"tiers": [[21, 59.5], [51, 56.5], [101, 54.5], [301, 53.5]], "note": "欧洲包税-空派快线 21KG+ · 法国"}, "EU_T3": {"tiers": [[21, 60.5], [51, 57.5], [101, 55.5], [301, 54.5]], "note": "欧洲包税-空派快线 21KG+ · 西班牙、意大利、波兰"}, "EU_T4": {"tiers": [[21, 64.5], [51, 61.5], [101, 59.5], [301, 58.5]], "note": "欧洲包税-空派快线 21KG+ · 丹希芬荷捷卢奥匈葡立爱拉罗"}, "UK": {"tiers": [[10, 57], [101, 56], [301, 55]], "note": "英国VAT递延-空运快线"}}}, "sea_express": {"label": "海派(美森CLX)", "regions": {"US_WEST": {"tiers": [[12, 19.5], [71, 17], [101, 15.5]]}, "US_WEST97": {"tiers": [[12, 21], [71, 18.5], [101, 17]]}, "US_CENTRAL": {"tiers": [[12, 21], [71, 18.5], [101, 17]]}, "US_EAST": {"tiers": [[12, 22], [71, 19.5], [101, 18]]}, "EU_T1": {"tiers": [[21, 15.4], [51, 13.4], [101, 10.9], [301, 10.9]], "note": "欧洲包税-海运 21KG+ · 德国"}, "EU_T2": {"tiers": [[21, 17.1], [51, 15.1], [101, 13.1], [301, 13.1]], "note": "欧洲包税-海运 21KG+ · 法国波兰捷克荷兰比利时卢森堡"}, "EU_T3": {"tiers": [[21, 18.1], [51, 16.1], [101, 14.1], [301, 14.1]], "note": "欧洲包税-海运 21KG+ · 意大利西班牙匈牙利葡萄牙丹麦芬兰"}, "EU_T4": {"tiers": [[21, 20.1], [51, 18.1], [101, 16.1], [301, 16.1]], "note": "欧洲包税-海运 21KG+ · 保加利亚爱沙尼亚拉脱维亚罗马尼亚"}, "UK": {"tiers": [[10, 10.2], [101, 8.2], [301, 8.2]], "note": "英国VAT递延-海运"}}}, "sea_truck": {"label": "海卡(普船)", "regions": {"EU_T1": {"tiers": [[21, 21.5], [51, 19.5], [101, 17.5], [301, 17.5]], "note": "欧洲包税-卡航 21KG+ · 德国"}, "EU_T2": {"tiers": [[21, 24], [51, 22], [101, 20], [301, 20]], "note": "欧洲包税-卡航 21KG+ · 法国西班牙意大利"}, "EU_T3": {"tiers": [[21, 24.5], [51, 22.5], [101, 20.5], [301, 20.5]], "note": "欧洲包税-卡航 21KG+ · 荷捷丹芬瑞典波兰奥地利"}, "EU_T4": {"tiers": [[21, 26.5], [51, 24.5], [101, 22.5], [301, 22.5]], "note": "欧洲包税-卡航 21KG+ · 希腊立陶宛爱尔兰爱沙尼亚拉脱维亚"}, "UK": {"tiers": [[10, 9.6], [101, 7.6], [301, 7.6]], "note": "英国VAT递延-海卡 (FBA仓库BHX4/8,LBA4,LPL2,LBA8,EMA3,MAN4,BHX2/7,LBA2)"}}}}, "sur": {"included": "基础价已含：燃油+清关费+关税+门到门(包税渠道)", "remote": {"mode": "kg", "kg": 2, "min": 180}, "remote_label": "偏远附加费 +2元/KG（最低180/票）；超偏远+3/KG(最低240)", "nonfba": {"fba": {"v": 0, "u": "kg"}, "commercial": {"v": 1, "u": "kg"}, "residential": {"v": 1, "u": "kg"}}, "nonfba_label": "非FBA地址 +1元/KG（最低150/票）", "product": {"normal": 0, "sensitive": 2, "medical": 3}, "product_label": "产品附加费：敏感类(纺织品/灯/陶瓷/FDA/木竹/酒精棉等)+2元/KG；医疗美容仪器+3元/KG", "oversku": {"free": 3, "per": 35}, "oversku_label": "超品名费：超3个品名 +35元/个", "customs": {"base": 500, "page": 50, "op": 0}, "customs_label": "单独报关：500元/票 + 50/续页", "magnet": {"mode": "fixed", "fixed": 400}, "magnet_label": "磁检费：400元/票（弱磁必检）", "bamboo": {"mode": "none"}, "bamboo_label": "木竹制品：走产品附加费(敏感+2元/KG)", "extra": "超长超重：超重(<22kg)+320/件；超长(<118cm)+230/件；超围长(<260cm)+230/件（单箱计费重不足12KG按12KG计）"}}, "yafeng": {"name": "亚丰", "updated": "2026-03-17", "channels": {"air": {"label": "空派", "regions": {"US_WEST": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "US_CENTRAL": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "US_EAST": {"tiers": [[20, 57], [70, 55], [100, 53], [101, 51]]}, "EU_T1": {"tiers": [[21, 48], [45, 46], [100, 45]], "note": "欧洲空运包税 UPS快线 21KG+ · 德国"}, "EU_T2": {"tiers": [[21, 50.5], [45, 48.5], [100, 47.5]], "note": "欧洲空运包税 UPS快线 21KG+ · 捷克波兰奥地利匈牙利法国"}, "EU_T3": {"tiers": [[21, 51], [45, 49], [100, 48]], "note": "欧洲空运包税 UPS快线 21KG+ · 荷丹爱立拉保卢瑞葡芬斯洛西意"}, "EU_T4": {"tiers": [[21, 51.5], [45, 49.5], [100, 48.5]], "note": "欧洲空运包税 UPS快线 21KG+ · 希腊爱尔兰"}, "UK": {"tiers": [[21, 49], [51, 47], [101, 46], [301, 45.5]], "note": "英国DPD快线 包税"}}}, "sea_express": {"label": "海派(美森CLX)", "regions": {"US_WEST": {"tiers": [[51, 17], [100, 15.5], [101, 14]]}, "US_CENTRAL": {"tiers": [[51, 18], [100, 16.5], [101, 15]]}, "US_EAST": {"tiers": [[51, 19], [100, 17.5], [101, 16]]}, "EU_T1": {"tiers": [[21, 16.8], [45, 14.8], [100, 13.3], [500, 13.2]], "note": "欧盟海运包税 EU-W 21KG+ · 德国"}, "EU_T2": {"tiers": [[21, 17.8], [45, 15.8], [100, 14.3], [500, 14.2]], "note": "欧盟海运包税 EU-W 21KG+ · 捷克波兰奥地利匈牙利法国"}, "EU_T3": {"tiers": [[21, 18.8], [45, 16.8], [100, 15.3], [500, 15.2]], "note": "欧盟海运包税 EU-W 21KG+ · 荷丹爱立拉保卢瑞葡芬斯洛西意"}, "EU_T4": {"tiers": [[21, 19.8], [45, 17.8], [100, 16.3], [500, 16.2]], "note": "欧盟海运包税 EU-W 21KG+ · 希腊爱尔兰"}, "UK": {"tiers": [[21, 16], [51, 14], [101, 13], [301, 12.9]], "note": "英国海运 DPD派送 包税"}}}, "sea_truck": {"label": "海卡(普船)", "regions": {}}}, "sur": {"included": "基础价已含：燃油+清关费+关税+当地门到门派送(报价含油含税)", "remote": {"mode": "piece", "piece": 30}, "remote_label": "偏远附加费 30元/件（实报实销）", "nonfba": {"fba": {"v": 0, "u": "kg"}, "commercial": {"v": 1, "u": "kg"}, "residential": {"v": 30, "u": "piece"}}, "nonfba_label": "非FBA：商业地址+1元/KG；私人住宅+30元/件", "product": {"normal": 0, "sensitive": 2}, "product_label": "产品附加费：灯具/陶瓷/FDA/酒精棉/木竹 +2元/KG", "oversku": {"free": 5, "per": 30}, "oversku_label": "超品名费：超5个品名 +30元/个", "customs": {"base": 350, "page": 50, "op": 1}, "customs_label": "单独报关：350元/票 + 50/续页 + 操作费1元/KG", "magnet": {"mode": "kg", "kg": 1, "min": 400}, "magnet_label": "磁检费：1元/KG（最低400/票）", "bamboo": {"mode": "kg", "kg": 2, "min": 600}, "bamboo_label": "商检费(竹/木/防潮剂)：2元/KG（最低600/票）", "extra": "签收证明+45元/件；超长超重/更改地址等按渠道另计；所有渠道偏远实报实销"}}};
 var CH = {air:'空派', sea_express:'海派(美森CLX)', sea_truck:'海卡(普船)'};
 var RG = {US_WEST:'美西 (邮编8-9)', US_WEST97:'美西 (邮编97-99)', US_CENTRAL:'美中 (邮编4-7)', US_EAST:'美东 (邮编0-3)', EU_T1:'欧洲T1·德国', EU_T2:'欧洲T2·法国', EU_T3:'欧洲T3·西/意/波', EU_T4:'欧洲T4·其他偏远国', UK:'英国', CA:'加拿大'};
 var CHKEYS = ['air','sea_express','sea_truck'];
-function rateFor(tiers,w){ var rate=tiers[0][1];
-  for(var i=0;i<tiers.length;i++){ if(w>=tiers[i][0]){ rate=tiers[i][1]; } else break; }
-  return rate; }
-function rebuild(){ var w=parseFloat(document.getElementById('cw').value)||0;
-  var rows=document.getElementById('cmp').querySelector('tbody'); rows.innerHTML='';
-  var regions={};
+function rateFor(tiers,w){
+  var rate=tiers[0][1], bp=tiers[0][0];
+  for(var i=0;i<tiers.length;i++){ if(w>=tiers[i][0]){ rate=tiers[i][1]; bp=tiers[i][0]; } else break; }
+  return {rate:rate, bp:bp};
+}
+function calcCarrier(c, ch, rg, w, v, q, addr, remote, prod, sku, customs, magnet, bamboo){
+  var rd = c.channels[ch] && c.channels[ch].regions[rg];
+  if(!rd) return null;
+  var cw = Math.max(w, v/6000);
+  var res = rateFor(rd.tiers, cw);
+  var base = res.rate * cw;
+  var S = c.sur || {};
+  // 常规附加费
+  var remoteFee = 0;
+  if(remote==='yes' && S.remote){
+    if(S.remote.mode==='kg') remoteFee = Math.max(S.remote.kg*cw, S.remote.min||0);
+    else remoteFee = (S.remote.piece||0)*q;
+  }
+  var nonfbaFee = 0;
+  if(S.nonfba){ var nf = S.nonfba[addr] || {v:0,u:'kg'}; if(nf.v>0) nonfbaFee = (nf.u==='kg') ? nf.v*cw : nf.v*q; }
+  var prodFee = (S.product && S.product[prod] ? S.product[prod] : 0) * cw;
+  var regular = base + remoteFee + nonfbaFee + prodFee;
+  // 特殊附加费
+  var overskuFee = 0;
+  if(S.oversku && sku > S.oversku.free) overskuFee = (sku - S.oversku.free) * S.oversku.per;
+  var customsFee = 0;
+  if(customs==='yes' && S.customs) customsFee = S.customs.base + (S.customs.op||0)*cw;
+  var magnetFee = 0;
+  if(magnet==='yes' && S.magnet){
+    if(S.magnet.mode==='fixed') magnetFee = S.magnet.fixed;
+    else magnetFee = Math.max(S.magnet.kg*cw, S.magnet.min||0);
+  }
+  var bambooFee = 0;
+  if(bamboo==='yes' && S.bamboo && S.bamboo.mode!=='none') bambooFee = Math.max(S.bamboo.kg*cw, S.bamboo.min||0);
+  var allin = regular + overskuFee + customsFee + magnetFee + bambooFee;
+  return {base:base, regular:regular, allin:allin, bp:res.bp};
+}
+function num(id){ return parseFloat(document.getElementById(id).value) || 0; }
+function sel(id){ return document.getElementById(id).value; }
+function rebuild(){
+  var w = num('real'), v = num('vol'), q = Math.max(1, num('qty')||1);
+  var addr = sel('addr'), remote = sel('remote'), prod = sel('prod'), sku = Math.max(1, num('sku')||1);
+  var customs = sel('customs'), magnet = sel('magnet'), bamboo = sel('bamboo'), mode = sel('mode');
+  var rows = document.getElementById('cmp').querySelector('tbody'); rows.innerHTML='';
+  var regions = {};
   for(var k in CARRIERS){ var c=CARRIERS[k]; for(var ch in c.channels){ for(var rg in c.channels[ch].regions) regions[rg]=1; } }
   Object.keys(regions).forEach(function(rg){
-    var tr=document.createElement('tr'); tr.innerHTML='<td>'+RG[rg]+'</td>';
+    var tr = document.createElement('tr'); tr.innerHTML = '<td>'+RG[rg]+'</td>';
     CHKEYS.forEach(function(ch){
-      var cell=''; var any=false;
-      for(var k in CARRIERS){ var c=CARRIERS[k]; var rd=c.channels[ch]&&c.channels[ch].regions[rg];
-        if(rd){ any=true; var r=rateFor(rd.tiers,w); cell+='<span class="'+(k==='zhongyuntong'?'c0':'c1')+'">'+c.name+' ¥'+r+'</span>'; } }
-      var td=document.createElement('td'); td.className='cell'; td.innerHTML=any?cell:'<span class="none">—</span>'; tr.appendChild(td);
+      var items = [];
+      for(var k in CARRIERS){
+        var c = CARRIERS[k];
+        var r = calcCarrier(c, ch, rg, w, v, q, addr, remote, prod, sku, customs, magnet, bamboo);
+        if(r){
+          var price = mode==='base' ? r.base : (mode==='reg' ? r.regular : r.allin);
+          items.push({k:k, name:c.name, price:price});
+        }
+      }
+      var td = document.createElement('td'); td.className='cell';
+      if(items.length===0){ td.innerHTML='<span class="none">—</span>'; }
+      else {
+        items.sort(function(a,b){ return a.price-b.price; });
+        var html = '';
+        items.forEach(function(it, idx){
+          var cls = idx===0 ? 'c1' : 'c0';
+          var label = mode==='base' ? '裸价' : (mode==='reg' ? '常规' : '全包');
+          html += '<span class="'+cls+'">'+it.name+' '+label+' ¥'+it.price.toFixed(0)+'</span>';
+        });
+        td.innerHTML = html;
+      }
+      tr.appendChild(td);
     });
     rows.appendChild(tr);
   });
 }
-document.getElementById('cw').oninput=rebuild; rebuild();
+['real','vol','qty','addr','remote','prod','sku','customs','magnet','bamboo','mode'].forEach(function(id){
+  var el = document.getElementById(id); el.onchange = el.oninput = rebuild;
+});
+rebuild();
 </script></body></html>
