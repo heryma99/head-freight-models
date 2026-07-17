@@ -6,7 +6,7 @@
 --acc:#4da3ff;--acc2:#23c4a0;--warn:#ffb454;--hit:#1d3a2e;--bad:#ff6b6b;}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,'Segoe UI',Roboto,'Microsoft YaHei',sans-serif}
-.wrap{max-width:960px;margin:0 auto;padding:24px 18px 60px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px}
 header{margin-bottom:18px}
 h1{font-size:22px;margin:0 0 6px}
 .meta{color:var(--mut);font-size:13px}
@@ -50,9 +50,12 @@ footer p{margin:4px 0}
 .cmp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
 .cmp .ctr{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:var(--mut);font-size:13px}
 .cmp input{width:110px}
+.cmp .ctr span{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.cmp .ctr span input{width:70px}
+.cmp .ctr span select{width:auto;min-width:70px}
 td.cell span{display:block;font-size:13px;padding:2px 0}
 td.cell .c0{color:var(--acc)}
-td.cell .c1{color:var(--acc2)}
+td.cell .c1{color:var(--acc2);font-weight:600}
 td.none{color:var(--mut)}
 .warn{color:var(--warn)}
 </style></head>
@@ -91,7 +94,7 @@ td.none{color:var(--mut)}
 <div class="note" id="chNote"></div></section>
 <section class="card"><h2>附加费说明（本物流商）</h2>
 <div class="note" id="surNote"></div></section>
-<footer><p>计费重 = max(实重, 体积重/8000)；按 KG 向上取最小档计费（最小档 ≥ 计费重）。超出公开档位上限按最高档单价估算，实际可议。</p>
+<footer><p>计费重 = max(实重, 体积重/6000)；按 KG 向上取最小档计费（最小档 ≥ 计费重）。超出公开档位上限按最高档单价估算，实际可议。</p>
 <p>三档含义：① <b>裸价</b>=基础运费；② <b>含常规附加费</b>=裸价+偏远+非FBA+产品类别；③ <b>全包到门</b>=含常规+超品名+单独报关+带磁+竹木商检。<b>基础价已含燃油+清关+关税+门到门</b>，下列附加费为需叠加项。</p>
 <p>数据源：亚丰 报价（2026-03-17），飞书群「电商渠道X物流(报价)」。仅供内部预估，以实际账单为准。</p></footer>
 </div>
@@ -121,7 +124,7 @@ function compute(){
   var tb=rateTable.querySelector('tbody');
   if(!rd){ result.innerHTML='<div class="note">该目的地 × 渠道组合暂无报价</div>'; tb.innerHTML=''; chNote.textContent=''; return; }
   var tiers=rd.tiers, realW=num(real), v=num(vol), q=Math.max(1,num(qty)||1);
-  var cw=Math.max(realW, v/8000), res=rateFor(tiers,cw), base=res.rate*cw;
+  var cw=Math.max(realW, v/6000), res=rateFor(tiers,cw), base=res.rate*cw;
   var S=CARRIER.sur||{};
   // 常规附加费
   var remoteFee=0;
