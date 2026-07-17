@@ -201,7 +201,7 @@ function compute(){
     +'</div>'+bd;
 
   tb.innerHTML=''; tiers.forEach(function(t){ var tr=document.createElement('tr');
-    if(t[0]===res.bp) tr.className='hit'; tr.innerHTML='<td>≤ '+t[0]+' kg</td><td>¥ '+t[1]+'</td>'; tb.appendChild(tr); });
+    if(t[0]===res.bp) tr.className='hit'; var lbl=Math.round(t[0]*1000)/1000; tr.innerHTML='<td>≥ '+lbl+' kg</td><td>¥ '+t[1]+'</td>'; tb.appendChild(tr); });
   chNote.textContent = rd.note ? ('备注：'+rd.note) : '';
   var sn='基础价已含：'+(S.included||'—')+'<br>'
     +(S.remote_label||'')+'<br>'+(S.nonfba_label||'')+'<br>'+(S.product_label||'')+'<br>'
