@@ -54,8 +54,9 @@ footer p{margin:4px 0}
 .cmp .ctr span input{width:70px}
 .cmp .ctr span select{width:auto;min-width:70px}
 td.cell span{display:block;font-size:13px;padding:2px 0}
-td.cell .c0{color:var(--acc)}
-td.cell .c1{color:var(--acc2);font-weight:600}
+td.cell span.c0{color:var(--acc)}
+td.cell span.c1{color:var(--acc2);font-weight:600}
+td.cell .sub{color:var(--mut);font-size:11px;font-weight:400;padding:0}
 td.none{color:var(--mut)}
 .warn{color:var(--warn)}
 </style></head>
@@ -148,7 +149,7 @@ function rebuild(){
         var r = calcCarrier(c, ch, rg, w, v, q, addr, remote, prod, sku, customs, magnet, bamboo);
         if(r){
           var price = mode==='base' ? r.base : (mode==='reg' ? r.regular : r.allin);
-          items.push({k:k, name:c.name, price:price});
+          items.push({k:k, name:c.name, price:price, r:r});
         }
       }
       var td = document.createElement('td'); td.className='cell';
@@ -157,9 +158,12 @@ function rebuild(){
         items.sort(function(a,b){ return a.price-b.price; });
         var html = '';
         items.forEach(function(it, idx){
+          var r = it.r;
           var cls = idx===0 ? 'c1' : 'c0';
           var label = mode==='base' ? '裸价' : (mode==='reg' ? '常规' : '全包');
-          html += '<span class="'+cls+'">'+it.name+' '+label+' ¥'+it.price.toFixed(0)+'</span>';
+          var surcharge = it.price - r.base;
+          var sub = '<span class="sub">运费¥' + r.base.toFixed(0) + (surcharge>0 ? ' + 附加费¥' + surcharge.toFixed(0) : '') + '</span>';
+          html += '<span class="' + cls + '">' + it.name + ' ' + label + ' ¥' + it.price.toFixed(0) + '</span>' + sub;
         });
         td.innerHTML = html;
       }
